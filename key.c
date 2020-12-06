@@ -16,6 +16,10 @@ int map(int fd)
     int ret;
     for(int i = 0; i < sizeof(scancode_keycodes)/sizeof(scancode_keycodes[0]); i++)
     {
+	int test[2];
+	test[0] = scancode_keycodes[i][0];
+	ret = ioctl(fd, EVIOCGKEYCODE, test);
+	printf("%d\n", test[1] );
 	ret = ioctl(fd, EVIOCSKEYCODE, scancode_keycodes[i]);	
 	if(ret < 0)
 	{
@@ -31,7 +35,8 @@ int unmap(int fd)
     int ret;
     for(int i = 0; i < sizeof(scancode_keycodes)/sizeof(scancode_keycodes[0]); i++)
     {
-	ret = ioctl(fd, EVIOCSKEYCODE, (char[2]) {scancode_keycodes[i][0], scancode_keycodes[i][0]} );	
+	scancode_keycodes[i][1] = scancode_keycodes[i][0];
+	ret = ioctl(fd, EVIOCSKEYCODE, scancode_keycodes[i]);
 	if(ret < 0)
 	{
 	    fprintf(stderr, "couldn't unmap keycode: %d, error: %s\n", scancode_keycodes[i][0], strerror(-ret));
@@ -78,7 +83,7 @@ int main(int argc, char **argv)
 	   else ret = unmap(fd);
 	   if(!ret)
 	   {
-	       printf("Keys mapped successfully for %s\n", argv[i]);
+	       printf("Keys mapped/unmapped successfully for %s\n", argv[i]);
 	   }
 	}
 SKIPPED:

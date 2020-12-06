@@ -3,5 +3,5 @@ static unsigned scancode_keycodes[][2] = {
 };
 
 static char* keyboards[] = {
-    "AT Translated Set 2 keyboard"
+    //"AT Translated Set 2 keyboard"
 };
