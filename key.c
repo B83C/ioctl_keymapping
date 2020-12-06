@@ -72,9 +72,9 @@ int main(int argc, char **argv)
 	    fprintf(stderr, "Error getting device name for %s, error: %s\n", argv[i], strerror(-ret));
 	    goto SKIPPED;
 	}
-	if((bit & 0x120013) == 0x120013 && checkname(name))
+	if((bit & 0x120013) == 0x120013 && !checkname(name))
 	{
-	   if(*argv[0]) ret = map(fd); 
+	   if(*argv[1] - '0') ret = map(fd); 
 	   else ret = unmap(fd);
 	   if(!ret)
 	   {
