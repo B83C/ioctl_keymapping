@@ -3,6 +3,8 @@ OBJ = ${SRC:.c=.o}
 CC = cc
 PREFIX = /usr/local/
 
+all: key config.h
+
 config.h:
 	cp config.def.h $@
 
@@ -14,8 +16,7 @@ clean:
 $(OBJ): %.o : %.c 
 	${CC} -c $< ${CFLAGS}
 
-key:
+key: $(OBJ)
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
-
-install:
 	
+.PHONY: all
