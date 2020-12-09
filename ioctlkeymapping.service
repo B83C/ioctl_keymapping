@@ -1,0 +1,9 @@
+[Unit]
+Description=Keymapping using ioctl
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/key 1
+
+[Install]
+WantedBy=multi-user.target

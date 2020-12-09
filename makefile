@@ -1,7 +1,7 @@
 SRC = key.c
 OBJ = ${SRC:.c=.o}
 CC = cc
-PREFIX = /usr/local/
+PREFIX = /usr/local
 
 all: key config.h
 
@@ -19,4 +19,15 @@ $(OBJ): %.o : %.c
 key: $(OBJ)
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
 	
+install: key
+	sudo cp ./key ${PREFIX}/bin/
+	sudo cp ioctlkeymapping.service /etc/systemd/system/
+	sudo chmod 644 /etc/systemd/system/ioctlkeymapping.service
+	sudo systemctl enable ioctlkeymapping
+
+uninstall:
+	sudo rm ${PREFIX}/bin/key
+	sudo systemctl disable ioctlkeymapping
+	sudo rm /etc/systemd/system/ioctlkeymapping.service
+
 .PHONY: all

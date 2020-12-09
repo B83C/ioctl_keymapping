@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include <linux/input.h>
+#include <dirent.h>
 
 #include "config.h"
 
@@ -19,7 +20,6 @@ int map(int fd)
 	int test[2];
 	test[0] = scancode_keycodes[i][0];
 	ret = ioctl(fd, EVIOCGKEYCODE, test);
-	printf("%d\n", test[1] );
 	ret = ioctl(fd, EVIOCSKEYCODE, scancode_keycodes[i]);	
 	if(ret < 0)
 	{
@@ -58,35 +58,47 @@ int checkname(char* name)
 
 int main(int argc, char **argv)
 {
-    for(int i = 2; i < argc; i++)
+    int fdr = open("/dev/input/", O_DIRECTORY);
+    DIR* ed = fdopendir(fdr);
+    struct dirent* file;
+    while((file = readdir(ed)) != NULL)
     {
+    if(file->d_type != DT_CHR)	continue;
 	int fd;
 	int ret;
 	char name[256];
 	unsigned int bit;
-	fd = open(argv[i], O_CLOEXEC);
+	fd = openat(fdr, file->d_name, O_CLOEXEC);
+	//Added in order to decrease the amount of syscalls
+	#ifdef DOUBLE_CHECK
 	ret = ioctl(fd, EVIOCGBIT(0,sizeof(bit)),&bit);
 	if(ret < 0)
 	{
-	    fprintf(stderr, "Error getting EV bits for %s, error: %s\n", argv[i], strerror(-ret));
+	    fprintf(stderr, "Error getting EV bits for %s, error: %s\n", file->d_name, strerror(-ret));
 	    goto SKIPPED;
 	}
+	#endif
 	ret = ioctl (fd, EVIOCGNAME(sizeof(name)), name);
 	if(ret < 0)
 	{
-	    fprintf(stderr, "Error getting device name for %s, error: %s\n", argv[i], strerror(-ret));
+	    fprintf(stderr, "Error getting device name for %s, error: %s\n", file->d_name, strerror(-ret));
 	    goto SKIPPED;
 	}
-	if((bit & 0x120013) == 0x120013 && !checkname(name))
+	if(
+		#ifdef DOUBLE_CHECK
+		(bit & 0x120013) == 0x120013 && 
+		#endif
+		!checkname(name))
 	{
-	   if(*argv[1] - '0') ret = map(fd); 
-	   else ret = unmap(fd);
-	   if(!ret)
-	   {
-	       printf("Keys mapped/unmapped successfully for %s\n", argv[i]);
-	   }
+	    if(*argv[1] - '0') ret = map(fd); 
+	    else ret = unmap(fd);
+	    if(!ret)
+	    {
+		printf("Keys mapped/unmapped successfully for %s\n", file->d_name);
+	    }
 	}
 SKIPPED:
 	close(fd);
     }
+    return 0;
 }
