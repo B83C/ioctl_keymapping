@@ -1,9 +1,9 @@
-# ioctl_keymapping
+# IOCTL KEYMAPPING UTILITY
 Simple keymapping employing ioctl which works in both X11 and console. Not a daemon, its execution is one-shot.
 
 ## INSTALLATION
 Paste the commands into your terminal and hit enter
-```
+```sh
 git clone https://github.com/b83c/ioctl_keymapping
 cd ioctl_keymapping
 make clean && make install #This will install the binary file into /usr/local/bin and at the same time, create a systemd service.
