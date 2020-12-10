@@ -1,7 +1,7 @@
 # ioctl_keymapping
 Simple keymapping employing ioctl which works in both X11 and console. Not a daemon, its execution is one-shot.
 
-##INSTALLATION
+## INSTALLATION
 Paste the commands into your terminal and hit enter
 ```
 git clone https://github.com/b83c/ioctl_keymapping
@@ -9,7 +9,7 @@ cd ioctl_keymapping
 make clean && make install #This will install the binary file into /usr/local/bin and at the same time, create a systemd service.
 ```
 
-##CONFIGURATION
+## CONFIGURATION
 By default, config.h doesn't exist in the repository, and is copied from config.def.h at compile time. And of course, you can manually make a copy of your own.
 Below is an example that works on most laptops:
 ```c
@@ -26,8 +26,8 @@ static char* keyboards[] = {
 }
 ```
 
-##TODO
+## TODO
 Reduce syscalls and performance.
 
-##LICENSE
+## LICENSE
 none
