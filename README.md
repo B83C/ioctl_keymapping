@@ -27,7 +27,7 @@ static char* keyboards[] = {
 ```
 
 ## TODO
-Reduce syscalls and performance.
+Reduce syscalls and boost performance.
 
 ## LICENSE
 none
